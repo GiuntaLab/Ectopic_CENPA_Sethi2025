@@ -11,14 +11,14 @@ Adapter trimming and quality control were performed using Trim Galore, with Cuta
 Running this script will create BAM files and reads count files for each sample.
 ```commandline
 #fastq files must be in the same folder
-bash bowtie2_RPE1v1.1_dm6.sh 
+bash Step1_bowtie2_RPE1v1.1_dm6.sh
 ```
 ## Calculating spike-in scale factor (SF)
 Now you can navigate to the `Bam/` directory using `cd`. The reads count files for each sample are now available at `../ReadCount/*.txt` and will be used as input for the perl script.\
 Running this script will create the scale factors for each sample and condition.
 ```commandline
 #BAM files must be in the same folder and reads count in ../ReadCount/*.txt
-perl Step1_ReadCount_combine.pl 
+perl Step2_ReadCount_combine.pl
 ```
 ## Normalizing mapped reads both by Input and Spike-in genome
 To normalize the mapped reads both by input and Spike-in genome, we ran the 3rd script with a proper bin size (e.g. 50bp) and got BigWig files for each sample.
@@ -41,6 +41,36 @@ bigWigToBedGraph in.bigWig out.bedGraph
 [HumAS-HMMER_for_AnVIL](https://github.com/fedorrik/HumAS-HMMER_for_AnVIL) was used to annotate centromeres in the RPE1v1.1 genome, as described in [Volpe et al.](https://pubmed.ncbi.nlm.nih.gov/38168337/). The centromeric alpha-satellite annotation file was used to intersect the BedGraph signals and retrieve only centromeric or no-centromeric signals.  
 
 #### Fig3a, b and FigS7a
+To visualize the cumulative signals of each condition, we used `bigWigMerge` (a utility from the UCSC Genome Browser) to merge BigWig files from each replicate by summing their signal values. The resulting BedGraph file for each condition was then filtered to retain only entries with values greater than 1 in the fourth column (corresponding to a ratio of IP/Input > 1). These filtered BedGraph files were visualized using `karyoploteR` to display the genome-wide signal of siEP400 and siNEG across each chromosome of the RPE1v1.1 haplotypes.
+
+```commandline
+#!/bin/sh
+#These commands were applied on the files used to make the genome-wide plot in Fig.3a,b
+bigWigMerge RPE-gCA1_siEP_CA_SpikeIn_pInp_bin50_sm150_hap1.bw RPE-gCA2_siEP_CA_SpikeIn_pInp_bin50_sm150_hap1.bw RPE-gCA3_siEP_CA_SpikeIn_pInp_bin50_sm150_hap1.bw RPE1_siEP_bin50_sm150_hap1_merged.bw.bedGraph
+bigWigMerge RPE-gCA1_siNG_CA_SpikeIn_pInp_bin50_sm150_hap1.bw RPE-gCA2_siNG_CA_SpikeIn_pInp_bin50_sm150_hap1.bw RPE-gCA3_siNG_CA_SpikeIn_pInp_bin50_sm150_hap1.bw RPE1_siNG_bin50_sm150_hap1_merged.bw.bedGraph
+bigWigMerge RPE-gCA1_siEP_CA_SpikeIn_pInp_bin50_sm150_hap2.bw RPE-gCA2_siEP_CA_SpikeIn_pInp_bin50_sm150_hap2.bw RPE-gCA3_siEP_CA_SpikeIn_pInp_bin50_sm150_hap2.bw RPE1_siEP_bin50_sm150_hap2_merged.bw.bedGraph
+bigWigMerge RPE-gCA1_siNG_CA_SpikeIn_pInp_bin50_sm150_hap2.bw RPE-gCA2_siNG_CA_SpikeIn_pInp_bin50_sm150_hap2.bw RPE-gCA3_siNG_CA_SpikeIn_pInp_bin50_sm150_hap2.bw RPE1_siNG_bin50_sm150_hap2_merged.bw.bedGraph
+
+awk 'BEGIN {OFS="\t"} $4 > 1' RPE1_siEP_bin50_sm150_hap1_merged.bw.bedGraph > RPE1_siEP_bin50_sm150_hap1_merged.bw.over1.bedGraph
+awk 'BEGIN {OFS="\t"} $4 > 1' RPE1_siNG_bin50_sm150_hap1_merged.bw.bedGraph > RPE1_siNG_bin50_sm150_hap1_merged.bw.over1.bedGraph
+awk 'BEGIN {OFS="\t"} $4 > 1' RPE1_siEP_bin50_sm150_hap2_merged.bw.bedGraph > RPE1_siEP_bin50_sm150_hap2_merged.bw.over1.bedGraph
+awk 'BEGIN {OFS="\t"} $4 > 1' RPE1_siNG_bin50_sm150_hap2_merged.bw.bedGraph > RPE1_siNG_bin50_sm150_hap2_merged.bw.over1.bedGraph
+```
+
+```commandline
+#!/bin/sh
+#These commands were applied on each bigwig file (12 files in total: 3 for each condition and haplotype)
+bigWigToBedGraph RPE-gCA1_siEP_CA_SpikeIn_pInp_bin50_sm150_hap1.bw RPE-gCA1_siEP_CA_SpikeIn_pInp_bin50_sm150_hap1.bw.bedgraph
+
+#Each bedgraph (12 files) was then filtered to make the plot of the FHIT gene in Fig.S7a
+awk 'BEGIN {OFS="\t"} $4 > 1' RPE-gCA1_siEP_CA_SpikeIn_pInp_bin50_sm150_hap1.bw.bedgraph > RPE-gCA1_siEP_CA_SpikeIn_pInp_bin50_sm150_hap1.bw.bedgraph.over1.bedGraph
+```
+
+Before running the R script, make sure to place it in the same directory as the input files produced from the previous commands, and manually set the working directory at the beginning of the script using `setwd()`.
+
+```
+Rscript Step4_Fig3a_b_FigS7a.R
+```
 
 #### Fig3c and FigS6
 Genome-wide and chromosome-level plotting of CENP-A IP/Input signals was performed using the custom **Step5_Fig3c_FigS6.R** script in R. 
@@ -48,7 +78,9 @@ Input data for the R script were generated using `bedtools` intersect with the c
 
 ```
 #parsing all bedgraph files with bedtools intersect
-for i in *bedgraph; do bash bedgraph_intersect.sh $i; done 
+#each bigwig file was converted into a bedgraph file using bigWigToBedGraph as described above
+for i in *bedgraph; do bedtools intersect -a $i -b AS-HOR-vs-RPE1v1.1.bed -wa -wb > $i\_AS_HOR.bed $i; done 
+for i in *bedgraph; do bedtools intersect -v -a $i -b AS-HOR-vs-RPE1v1.1.bed -wa -wb > $i\_out_AS_HOR.bed $i; done 
 ```
 The resulting files were processed with `awk` to add sample information:
 
@@ -97,3 +129,25 @@ Rscript Step5_Fig3c_FigS6.R
 ```
 
 #### Fig3d and FigS7b
+We used `bigwigCompare` to obtain the BedGraph files with the log2(siEP400/siNEG).
+
+```
+bigwigCompare -b1 RPE-gCA1_siEP_CA_SpikeIn_pInp_bin50_sm150_hap1.bw -b2 RPE-gCA1_siNG_CA_SpikeIn_pInp_bin50_sm150_hap1.bw -of bedgraph --binSize 50 --operation log2 -p 5 -o log2_rep1_hap1.bedgraph
+bigwigCompare -b1 RPE-gCA2_siEP_CA_SpikeIn_pInp_bin50_sm150_hap1.bw -b2 RPE-gCA2_siNG_CA_SpikeIn_pInp_bin50_sm150_hap1.bw -of bedgraph --binSize 50 --operation log2 -p 5 -o log2_rep2_hap1.bedgraph
+bigwigCompare -b1 RPE-gCA3_siEP_CA_SpikeIn_pInp_bin50_sm150_hap1.bw -b2 RPE-gCA3_siNG_CA_SpikeIn_pInp_bin50_sm150_hap1.bw -of bedgraph --binSize 50 --operation log2 -p 5 -o log2_rep3_hap1.bedgraph
+bigwigCompare -b1 RPE-gCA1_siEP_CA_SpikeIn_pInp_bin50_sm150_hap2.bw -b2 RPE-gCA1_siNG_CA_SpikeIn_pInp_bin50_sm150_hap2.bw -of bedgraph --binSize 50 --operation log2 -p 5 -o log2_rep1_hap2.bedgraph
+bigwigCompare -b1 RPE-gCA2_siEP_CA_SpikeIn_pInp_bin50_sm150_hap2.bw -b2 RPE-gCA2_siNG_CA_SpikeIn_pInp_bin50_sm150_hap2.bw -of bedgraph --binSize 50 --operation log2 -p 5 -o log2_rep2_hap2.bedgraph
+bigwigCompare -b1 RPE-gCA3_siEP_CA_SpikeIn_pInp_bin50_sm150_hap2.bw -b2 RPE-gCA3_siNG_CA_SpikeIn_pInp_bin50_sm150_hap2.bw -of bedgraph --binSize 50 --operation log2 -p 5 -o log2_rep3_hap2.bedgraph
+```
+The BedGraph files were intersected with the centromeric annotation file of RPE1v1.1 using `bedtools` to have only the centromeric signals.
+
+```commandline
+#parsing all bedgraph files from bigwigCompare with bedtools intersect
+for i in *bedgraph; do bedtools intersect -a $i -b AS-HOR-vs-RPE1v1.1.bed -wa -wb > $i\_AS-HOR.bed $i; done 
+```
+
+Before running the R script, make sure to place it in the same directory as the *_AS-HOR.bed* files produced from the previous codes, and manually set the working directory at the beginning of the script using `setwd()`.
+
+```
+Rscript Step6_Fig3d_FigS7b.R
+```
