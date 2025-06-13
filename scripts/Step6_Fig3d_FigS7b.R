@@ -3,7 +3,7 @@ library(data.table)
 library(ggplot2)
 library(gridExtra)
 
-setwd("/data/VM/Documents/mylab/CENPA_Basrai_Munira/F7796_vx0054_2/BAM_SPIKEIN/BigWig_SpikeIn/intersect_in_out_centromere/prova_github_codes/Fig3d_FigS7b")
+setwd("")
 
 plot_log2_conditions <- function(title) {
   ggplot(mean_data, aes(x = V1, y = mean_value, color = regions)) +
