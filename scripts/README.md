@@ -69,7 +69,7 @@ awk 'BEGIN {OFS="\t"} $4 > 1' RPE-gCA1_siEP_CA_SpikeIn_pInp_bin50_sm150_hap1.bw.
 Before running the R script, make sure to place it in the same directory as the input files produced from the previous commands, and manually set the working directory at the beginning of the script using `setwd()`.
 
 ```
-Rscript Step4_Fig3a_b_FigS7a.R
+Rscript Step4_Fig3a_b_FigS10b.R
 ```
 
 #### Fig3c and FigS9
@@ -125,7 +125,7 @@ awk -v OFS="\t" '{print $0, "REP3"}' RPE-gCA3_siNG_CA_SpikeIn_pInp_bin50_sm150_h
 Before running the R script, make sure to place it in the same directory as the *_AS_HOR_hap1.bed* and *_AS_HOR_hap2.bed* files produced from the previous codes, and manually set the working directory at the beginning of the script using `setwd()`.
 
 ```
-Rscript Step5_Fig3c_FigS6.R
+Rscript Step5_Fig3c_FigS9.R
 ```
 
 #### Fig3d and FigS10a
@@ -149,5 +149,5 @@ for i in *bedgraph; do bedtools intersect -a $i -b AS-HOR-vs-RPE1v1.1.bed -wa -w
 Before running the R script, make sure to place it in the same directory as the *_AS-HOR.bed* files produced from the previous codes, and manually set the working directory at the beginning of the script using `setwd()`.
 
 ```
-Rscript Step6_Fig3d_FigS7b.R
+Rscript Step6_Fig3d_FigS10a.R
 ```
