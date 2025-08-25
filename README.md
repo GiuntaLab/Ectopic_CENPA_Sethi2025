@@ -1,5 +1,5 @@
 # Ectopic_CENPA_Sethi2025
-This repository contains scripts for data processing and visualization related to the study **"Chromatin remodeling activity of EP400 safeguards chromosomal stability by preventing CENP-A mislocalization"** by Sethi et al., 2025 (currently under revision).\
+This repository contains scripts for data processing and visualization related to the study **"Chromatin remodeling activity of EP400 safeguards chromosomal stability by preventing CENP-A mislocalization"** by Sethi et al., 2025 (accepted in principle).\
 The analysis was performed on ChIP-seq data with spike-in normalization on RPE-1 cells to assess the localization of CENP-A upon depletion of EP400, which is a subunit of the NuA4 histone acetyltransferase complex. The analysis shows that EP400 depletion promotes CENP-A mislocalization on chromosome arms, confirming previous observation obtained using metaphase chromosome spreads and biochemical assays.
 
 ### Main process:
@@ -31,5 +31,5 @@ After putting the 2nd script **Step2_ReadCount_combine.pl** and the 3rd script *
 + tidyverse (v2.0.0)
 
 ### References:
-+ **Chromatin remodeling activity of EP400 safeguards chromosomal stability by preventing CENP-A mislocalization** by Sethi et al., 2025 (currently under revision)
++ **Chromatin remodeling activity of EP400 safeguards chromosomal stability by preventing CENP-A mislocalization** by Sethi et al., 2025 (accepted in principle)
 + **The complete diploid reference genome of RPE-1 identifies human phased epigenetic landscapes** by Volpe et al., bioRxiv 2023 (currently under revision)

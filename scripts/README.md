@@ -40,7 +40,7 @@ bigWigToBedGraph in.bigWig out.bedGraph
 
 [HumAS-HMMER_for_AnVIL](https://github.com/fedorrik/HumAS-HMMER_for_AnVIL) was used to annotate centromeres in the RPE1v1.1 genome, as described in [Volpe et al.](https://pubmed.ncbi.nlm.nih.gov/38168337/). The centromeric alpha-satellite annotation file was used to intersect the BedGraph signals and retrieve only centromeric or no-centromeric signals.  
 
-#### Fig3a, b and FigS7a
+#### Fig3a, b and FigS10b
 To visualize the cumulative signals of each condition, we used `bigWigMerge` (a utility from the UCSC Genome Browser) to merge BigWig files from each replicate by summing their signal values. The resulting BedGraph file for each condition was then filtered to retain only entries with values greater than 1 in the fourth column (corresponding to a ratio of IP/Input > 1). These filtered BedGraph files were visualized using `karyoploteR` to display the genome-wide signal of siEP400 and siNEG across each chromosome of the RPE1v1.1 haplotypes.
 
 ```commandline
@@ -72,7 +72,7 @@ Before running the R script, make sure to place it in the same directory as the 
 Rscript Step4_Fig3a_b_FigS7a.R
 ```
 
-#### Fig3c and FigS6
+#### Fig3c and FigS9
 Genome-wide and chromosome-level plotting of CENP-A IP/Input signals was performed using the custom **Step5_Fig3c_FigS6.R** script in R. 
 Input data for the R script were generated using `bedtools` intersect with the centromere annotation file of the RPE1v1.1 genome.
 
@@ -128,7 +128,7 @@ Before running the R script, make sure to place it in the same directory as the 
 Rscript Step5_Fig3c_FigS6.R
 ```
 
-#### Fig3d and FigS7b
+#### Fig3d and FigS10a
 We used `bigwigCompare` to obtain the BedGraph files with the log2(siEP400/siNEG).
 
 ```
