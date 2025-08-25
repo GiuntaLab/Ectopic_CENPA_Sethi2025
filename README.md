@@ -31,5 +31,5 @@ After putting the 2nd script **Step2_ReadCount_combine.pl** and the 3rd script *
 + tidyverse (v2.0.0)
 
 ### References:
-+ **Chromatin remodeling activity of EP400 safeguards chromosomal stability by preventing CENP-A mislocalization** by Sethi et al., 2025 (currently under revision)
++ **Chromatin remodeling activity of EP400 safeguards chromosomal stability by preventing CENP-A mislocalization** by Sethi et al., 2025 (accepted in principle)
 + **The complete diploid reference genome of RPE-1 identifies human phased epigenetic landscapes** by Volpe et al., bioRxiv 2023 (currently under revision)
