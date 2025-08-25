@@ -1,4 +1,5 @@
 # Ectopic_CENPA_Sethi2025
+[![DOI](https://zenodo.org/badge/997518857.svg)](https://doi.org/10.5281/zenodo.16943672)\
 This repository contains scripts for data processing and visualization related to the study **"Chromatin remodeling activity of EP400 safeguards chromosomal stability by preventing CENP-A mislocalization"** by Sethi et al., 2025 (accepted in principle).\
 The analysis was performed on ChIP-seq data with spike-in normalization on RPE-1 cells to assess the localization of CENP-A upon depletion of EP400, which is a subunit of the NuA4 histone acetyltransferase complex. The analysis shows that EP400 depletion promotes CENP-A mislocalization on chromosome arms, confirming previous observation obtained using metaphase chromosome spreads and biochemical assays.
 
